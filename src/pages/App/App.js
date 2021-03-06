@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, gql } from '@apollo/client';
-import './App.css';
+import './app.module.scss';
 
 const PRODUCT_QUERY = gql`
   query($currentCurrency: Currency!) {
