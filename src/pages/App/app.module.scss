@@ -1,6 +1,57 @@
+@import '../../styles/generic.scss';
+
 .App {
-  background-color: #F5F5F4;
-  color: #000;
+  background-color: $color-primary;
+  color: $black;
+
+  &__Nav {
+    overflow: hidden;
+    background-color: $white;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    height: 64px;
+
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+    border-bottom: 1px solid $color-secondary;
+
+    img {
+      display: inline-block;
+      width: 163px;
+      height: 44px;
+      margin-right: 4rem;
+    }
+
+    &_left,
+    &_right {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      a {
+        font-family: $body-font-family;
+        text-align: center;
+        height: 48px;
+        font-size: 14px;
+        line-height: 17px;
+        margin-right: 1.25rem;
+        padding-top: 0.25rem;
+        padding-bottom: 0.25rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        -webkit-transition: color 0.3s ease-in-out;
+        transition: color 0.3s ease-in-out;
+        display: inline-block;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: $color-primary;
+      }
+    }
+  }
 }
 
 .App-header {
@@ -12,4 +63,3 @@
   font-size: calc(10px + 2vmin);
   color: #000;
 }
-

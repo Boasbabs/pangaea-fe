@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, gql } from '@apollo/client';
-import './app.module.scss';
+import styles from './app.module.scss';
+
+import Logo from 'assets/images/lumin-logo.png';
 
 const PRODUCT_QUERY = gql`
   query($currentCurrency: Currency!) {
@@ -47,7 +49,36 @@ function App() {
   } = useQuery(CURRENCY_QUERY);
 
   return (
-    <div className="App">
+    <div className={styles.App}>
+      <nav className={styles.App__Nav}>
+        <div className={styles.App__Nav_left}>
+          <img src={Logo} alt="Brand logo" />
+          <a class="active" href="#home">
+            Shop
+          </a>
+          <a href="#news">Help</a>
+          <a href="#contact">Blog</a>
+        </div>
+
+        <div className={styles.App__Nav_right}>
+          <a class="active" href="#home">
+            Account
+          </a>
+          <a href="#home">Cart</a>
+          <select name="language" id="">
+            <option key={'EN'} value={'EN'}>
+              EN
+            </option>
+            <option key={'DE'} value={'DE'}>
+              DE
+            </option>
+            <option key={'ESP'} value={'ESP'}>
+              ESP
+            </option>
+          </select>
+        </div>
+      </nav>
+
       {currencyData && (
         <select name="currency" id="">
           {currencyData.currency.map((curr) => (
@@ -58,7 +89,7 @@ function App() {
         </select>
       )}
 
-      <header className="App-header">
+      <main className="App-header">
         <div>
           {productLoading ? (
             <h5> loading... </h5>
@@ -78,7 +109,7 @@ function App() {
             })
           )}
         </div>
-      </header>
+      </main>
     </div>
   );
 }
