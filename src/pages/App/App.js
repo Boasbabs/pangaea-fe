@@ -1,5 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, gql } from '@apollo/client';
+import {
+  Grid,
+  Stack,
+  Text,
+  Heading,
+  Select,
+  Box,
+  Image,
+  Button,
+  Skeleton,
+  Flex,
+  Spacer,
+} from '@chakra-ui/react';
+
 import styles from './app.module.scss';
 
 import Logo from 'assets/images/lumin-logo.png';
@@ -52,7 +66,13 @@ function App() {
     <div className={styles.App}>
       <nav className={styles.App__Nav}>
         <div className={styles.App__Nav_left}>
-          <img src={Logo} alt="Brand logo" />
+          <Image
+            boxSize="120px"
+            objectFit="cover"
+            fallbackSrc="https://via.placeholder.com/40"
+            src={Logo}
+            alt={`Brand logo`}
+          />
           <a class="active" href="#home">
             Shop
           </a>
@@ -79,6 +99,26 @@ function App() {
         </div>
       </nav>
 
+      <Flex bg="white" padding="60">
+        <Box>
+          <Heading as="h1" isTruncated>
+            All Products
+          </Heading>
+          <Text fontSize="xl">A 360° look at Lumins</Text>
+        </Box>
+        <Spacer />
+        <Box>
+          <Select placeholder="Filter By" size="lg">
+            <option value="all-products">All Products</option>
+            <option value="new-products">New Products</option>
+            <option value="sets">Sets</option>
+            <option value="skincare">Skincare</option>
+            <option value="hair-and-body">Hair &amp; Body Care</option>
+            <option value="accessories">Accessories</option>
+          </Select>
+        </Box>
+      </Flex>
+
       {currencyData && (
         <select name="currency" id="">
           {currencyData.currency.map((curr) => (
@@ -89,7 +129,7 @@ function App() {
         </select>
       )}
 
-      <main className="App-header">
+      {/* <main className="App-header">
         <div>
           {productLoading ? (
             <h5> loading... </h5>
@@ -109,7 +149,59 @@ function App() {
             })
           )}
         </div>
-      </main>
+      </main> */}
+
+      <Skeleton height="50px" isLoaded={!productLoading}>
+        <Grid templateColumns="repeat(3, 1fr)" gap={10}>
+          {productData?.products.map((product) => {
+            return (
+              <Box key={product.id} bg="transparent" w="100%" mt="70">
+                <Box boxSize="sm" mb="40" padding="16" textAlign="center">
+                  <Image
+                    boxSize="120px"
+                    objectFit="cover"
+                    fallbackSrc="https://via.placeholder.com/150"
+                    src={product.image_url}
+                    alt={`${product.title}-product`}
+                  />
+                </Box>
+                <Box
+                  mt="40"
+                  textAlign="center"
+                  as="p"
+                  color="#4B5548"
+                  lineHeight="taller"
+                  isTruncated
+                >
+                  {product.title}
+                </Box>
+                <Box
+                  mt="2"
+                  textAlign="center"
+                  as="p"
+                  color="black"
+                  lineHeight="taller"
+                  isTruncated
+                >
+                  From: {product.price}
+                </Box>
+                <Box mt="25" textAlign="center">
+                  <Button
+                    size="md"
+                    height="48px"
+                    width="200px"
+                    border="0px"
+                    bg="#4B5548"
+                    color="white"
+                  >
+                    Add to Cart
+                  </Button>
+                </Box>
+              </Box>
+            );
+          })}
+        </Grid>
+      </Skeleton>
     </div>
   );
 }
