@@ -13,6 +13,7 @@ import {
   Spacer,
 } from '@chakra-ui/react';
 import { PRODUCT_QUERY, CURRENCY_QUERY } from './graphql';
+import { ProductCard } from 'components';
 
 import Logo from 'assets/images/lumin-logo.png';
 import styles from './app.module.scss';
@@ -157,49 +158,10 @@ function App() {
         <Grid templateColumns="repeat(3, 1fr)" gap={10}>
           {productData?.products.map((product) => {
             return (
-              <Box key={product.id} bg="transparent" w="100%" mt="70">
-                <Box boxSize="sm" mb="40" padding="16" textAlign="center">
-                  <Image
-                    boxSize="120px"
-                    fallbackSrc="https://via.placeholder.com/150"
-                    src={product.image_url}
-                    alt={`${product.title}-product`}
-                  />
-                </Box>
-                <Box
-                  mt="40"
-                  textAlign="center"
-                  as="p"
-                  color="#4B5548"
-                  lineHeight="taller"
-                  isTruncated
-                >
-                  {product.title}
-                </Box>
-                <Box
-                  mt="2"
-                  textAlign="center"
-                  as="p"
-                  color="black"
-                  lineHeight="taller"
-                  isTruncated
-                >
-                  From: {product.price}
-                </Box>
-                <Box mt="25" textAlign="center">
-                  <Button
-                    size="md"
-                    height="48px"
-                    width="200px"
-                    border="0px"
-                    bg="#4B5548"
-                    color="white"
-                    onClick={() => handleAddToCart(product)}
-                  >
-                    Add to Cart
-                  </Button>
-                </Box>
-              </Box>
+              <ProductCard
+                product={product}
+                handleAddToCart={handleAddToCart}
+              />
             );
           })}
         </Grid>
