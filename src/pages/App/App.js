@@ -12,23 +12,59 @@ import {
   Flex,
   Spacer,
 } from '@chakra-ui/react';
-import { PRODUCT_QUERY, CURRENCY_QUERY} from "./graphql"
+import { PRODUCT_QUERY, CURRENCY_QUERY } from './graphql';
 
 import Logo from 'assets/images/lumin-logo.png';
 import styles from './app.module.scss';
 
-
 function App() {
-  const currentCurrency = {
-    currentCurrency: 'USD',
+  const [cartData, setCartData] = useState({});
+  const [currency, setCurrency] = useState('USD');
+
+  const handleCurrencyChange = (event) => {
+    setCurrency(event.target.value);
   };
+
+  const handleAddToCart = (data) => {
+    //
+    let tempArray = cartData;
+
+    //  1. check if  data is in Cart
+    if (tempArray.hasOwnProperty(data.id)) {
+      // 2a. if yes, increase itemQuantity in cart
+      let newQuantity = cartData[data.id].itemQuantity + 1;
+
+      // 2b. copy old items and update with newQuantity
+      let _obj = {
+        ...cartData,
+        [data.id]: {
+          ...cartData[data.id],
+          itemQuantity: newQuantity,
+        },
+      };
+
+      setCartData(_obj);
+    } else {
+      // 3. if no, add to cart
+      let newObject = {
+        ...cartData,
+        [data.id]: {
+          ...data,
+          itemQuantity: 1,
+        },
+      };
+
+      setCartData(newObject);
+    }
+  };
+
   const {
     loading: productLoading,
     data: productData,
     error: productError,
   } = useQuery(PRODUCT_QUERY, {
     variables: {
-      ...currentCurrency,
+      currentCurrency: currency,
     },
   });
 
@@ -38,7 +74,9 @@ function App() {
     error: currencyError,
   } = useQuery(CURRENCY_QUERY);
 
-  if (productError || currencyError) return <Box children="error" />
+  useEffect(() => console.log({ cartData }), [currency, cartData]);
+
+  if (productError || currencyError) return <Box children="error" />;
 
   return (
     <div className={styles.App}>
@@ -79,14 +117,22 @@ function App() {
 
       <Flex bg="white" padding="60">
         <Box>
-          <Heading as="h1" isTruncated>
+          <Heading as="h1" mb="5" isTruncated>
             All Products
           </Heading>
-          <Text fontSize="xl">A 360° look at Lumins</Text>
+          <Text mt="15" fontSize="xl">
+            A 360° look at Lumins
+          </Text>
         </Box>
         <Spacer />
         <Box>
-          <Select placeholder="Filter By" size="lg">
+          <Select
+            variant="outline"
+            placeholder="Filter By"
+            size="lg"
+            mt="16"
+            iconColor="white"
+          >
             <option value="all-products">All Products</option>
             <option value="new-products">New Products</option>
             <option value="sets">Sets</option>
@@ -98,7 +144,7 @@ function App() {
       </Flex>
 
       {currencyData && (
-        <select name="currency" id="">
+        <select name="currency" id="" onChange={handleCurrencyChange}>
           {currencyData.currency.map((curr) => (
             <option key={curr} value={curr}>
               {curr}
@@ -115,7 +161,6 @@ function App() {
                 <Box boxSize="sm" mb="40" padding="16" textAlign="center">
                   <Image
                     boxSize="120px"
-                    objectFit="cover"
                     fallbackSrc="https://via.placeholder.com/150"
                     src={product.image_url}
                     alt={`${product.title}-product`}
@@ -149,6 +194,7 @@ function App() {
                     border="0px"
                     bg="#4B5548"
                     color="white"
+                    onClick={() => handleAddToCart(product)}
                   >
                     Add to Cart
                   </Button>
