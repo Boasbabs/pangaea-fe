@@ -21,18 +21,19 @@ import {
   DrawerCloseButton,
   useDisclosure,
   Divider,
+  useMediaQuery,
 } from '@chakra-ui/react';
 import { PRODUCT_QUERY, CURRENCY_QUERY } from './graphql';
 import { ProductCard, DrawerCard } from 'components';
-import {reducer, initialState} from "./config"
+import { reducer, initialState } from './config';
 
 import Logo from 'assets/images/lumin-logo.png';
 import styles from './app.module.scss';
 
-
 function App() {
   const [currency, setCurrency] = useState('USD');
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isLargerThan768] = useMediaQuery('(min-width: 768px)');
 
   const [state, dispatch] = useReducer(reducer, initialState);
   const handleCurrencyChange = (event) => {
@@ -97,7 +98,7 @@ function App() {
         </div>
       </nav>
 
-      <Flex bg="white" padding="40">
+      <Flex direction={isLargerThan768 ? 'row' : 'column'} bg="white" padding="40">
         <Box>
           <Heading
             as="h1"
@@ -135,7 +136,13 @@ function App() {
       </Flex>
 
       <Skeleton height="80vh" isLoaded={!productLoading}>
-        <Grid bg="#e0e2e0" templateColumns="repeat(3, 1fr)" gap={1}>
+        <Grid
+          bg="#e0e2e0"
+          templateColumns={
+            isLargerThan768 ? 'repeat(3, 1fr)' : 'repeat(2, 1fr)'
+          }
+          gap={1}
+        >
           {productData?.products.map((product) => {
             return (
               <ProductCard
@@ -158,13 +165,8 @@ function App() {
         </Grid>
       </Skeleton>
 
-      <Drawer
-        onClose={onClose}
-        isOpen={isOpen}
-        size={'md'}
-        placement="right"
-      >
-        <DrawerOverlay >
+      <Drawer onClose={onClose} isOpen={isOpen} size={'md'} placement="right">
+        <DrawerOverlay>
           <DrawerContent bg="#f5f5f4">
             <DrawerCloseButton />
 
@@ -238,7 +240,7 @@ function App() {
             <DrawerFooter>
               <Stack w="100%" direction="column" spacing={6} align="left">
                 <Button
-                   isFullWidth={true}
+                  isFullWidth={true}
                   variant="outline"
                   size="lg"
                   height="50px"
