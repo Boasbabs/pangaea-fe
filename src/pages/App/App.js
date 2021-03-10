@@ -10,7 +10,16 @@ import {
   Button,
   Skeleton,
   Flex,
+  Stack,
   Spacer,
+  Drawer,
+  DrawerBody,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { PRODUCT_QUERY, CURRENCY_QUERY } from './graphql';
 import { ProductCard } from 'components';
@@ -21,6 +30,7 @@ import styles from './app.module.scss';
 function App() {
   const [cartData, setCartData] = useState({});
   const [currency, setCurrency] = useState('USD');
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleCurrencyChange = (event) => {
     setCurrency(event.target.value);
@@ -45,6 +55,7 @@ function App() {
       };
 
       setCartData(_obj);
+      onOpen(); // open drawer
     } else {
       // 3. if no, add to cart
       let newObject = {
@@ -56,6 +67,7 @@ function App() {
       };
 
       setCartData(newObject);
+      onOpen(); // open drawer
     }
   };
 
@@ -116,9 +128,16 @@ function App() {
         </div>
       </nav>
 
-      <Flex bg="white" padding="60">
+      <Flex bg="white" padding="40">
         <Box>
-          <Heading as="h1" mb="5" isTruncated>
+          <Heading
+            as="h1"
+            fontSize="xx-large"
+            fontWeight="normal"
+            fontFamily="Playfair Display"
+            mb="5"
+            isTruncated
+          >
             All Products
           </Heading>
           <Text mt="15" fontSize="xl">
@@ -127,13 +146,7 @@ function App() {
         </Box>
         <Spacer />
         <Box>
-          <Select
-            variant="outline"
-            placeholder="Filter By"
-            size="lg"
-            mt="16"
-            iconColor="white"
-          >
+          <Select   borderRadius="none" size="lg" w="300px" variant="outline" placeholder="Filter By" size="lg" mt="1">
             <option value="all-products">All Products</option>
             <option value="new-products">New Products</option>
             <option value="sets">Sets</option>
@@ -144,21 +157,12 @@ function App() {
         </Box>
       </Flex>
 
-      {currencyData && (
-        <select name="currency" id="" onChange={handleCurrencyChange}>
-          {currencyData.currency.map((curr) => (
-            <option key={curr} value={curr}>
-              {curr}
-            </option>
-          ))}
-        </select>
-      )}
-
-      <Skeleton height="50px" isLoaded={!productLoading}>
-        <Grid templateColumns="repeat(3, 1fr)" gap={10}>
+      <Skeleton height="80vh" isLoaded={!productLoading}>
+        <Grid bg="#e0e2e0" templateColumns="repeat(3, 1fr)" gap={1}>
           {productData?.products.map((product) => {
             return (
               <ProductCard
+                key={product.id}
                 product={product}
                 handleAddToCart={handleAddToCart}
               />
@@ -166,6 +170,94 @@ function App() {
           })}
         </Grid>
       </Skeleton>
+
+      <Drawer bg="#e0e2e0" onClose={onClose} isOpen={isOpen} size={'md'} placement="right">
+        <DrawerOverlay>
+          <DrawerContent>
+            <DrawerCloseButton />
+
+            <DrawerHeader>
+              <Text mt="15" fontSize="md">
+                Your Cart
+              </Text>
+            </DrawerHeader>
+            <DrawerBody>
+              <Flex alignItems="center" justifyContent="flex-start">
+                <Box w="80px">
+                  {currencyData && (
+                    <Select
+                    borderRadius="none"
+                      name="currency"
+                      id=""
+                      size="sm"
+                      onChange={handleCurrencyChange}
+                    >
+                      {currencyData.currency.map((curr) => (
+                        <option key={curr} value={curr}>
+                          {curr}
+                        </option>
+                      ))}
+                    </Select>
+                  )}
+                </Box>
+                <Spacer />
+              </Flex>
+
+              <p>Some contents...</p>
+              <p>Some contents...</p>
+              <p>Some contents...</p>
+            </DrawerBody>
+
+            <DrawerFooter>
+              <Stack direction="column" spacing={6} align="left">
+                <Button
+                  //  isFullWidth={true}
+                  variant="outline"
+                  size="lg"
+                  height="50px"
+                  width="300px"
+                  fontSize="12"
+                  borderRadius="none"
+                  border="1px"
+                  borderColor="#4B5548"
+                  bg="#e0e2e0"
+                  color="#4B5548"
+                  textTransform="uppercase"
+                  mr={3}
+                  onClick={onClose}
+                >
+                  {'Make this a subscription (Save 20 %)'}
+                </Button>
+                <Button
+                  height="50px"
+                  textTransform="uppercase"
+                  border="none"
+                  fontSize="12"
+                  borderRadius="none"
+                  bg="#4B5548"
+                  _hover={{
+                    bg: '#e0e2e0',
+                    color: '#4B5548',
+                    border: '1px',
+                    borderColor: '#4B5548',
+                  }}
+                  _active={{
+                    bg: '#e0e2e0',
+                    transform: 'scale(0.98)',
+                    border: '1px',
+                    borderColor: '#4B5548',
+                    color: '#4B5548',
+                  }}
+                  isFullWidth={true}
+                  color="white"
+                >
+                  Proceed to checkout
+                </Button>
+              </Stack>
+            </DrawerFooter>
+          </DrawerContent>
+        </DrawerOverlay>
+      </Drawer>
     </div>
   );
 }
