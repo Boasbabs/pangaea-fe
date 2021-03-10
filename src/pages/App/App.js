@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import { useQuery } from '@apollo/client';
 import {
   Grid,
@@ -22,53 +22,20 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { PRODUCT_QUERY, CURRENCY_QUERY } from './graphql';
-import { ProductCard } from 'components';
+import { ProductCard, DrawerCard } from 'components';
+import {reducer, initialState} from "./config"
 
 import Logo from 'assets/images/lumin-logo.png';
 import styles from './app.module.scss';
 
+
 function App() {
-  const [cartData, setCartData] = useState({});
   const [currency, setCurrency] = useState('USD');
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  const [state, dispatch] = useReducer(reducer, initialState);
   const handleCurrencyChange = (event) => {
     setCurrency(event.target.value);
-  };
-
-  const handleAddToCart = (data) => {
-    //
-    let tempArray = cartData;
-
-    //  1. check if  data is in Cart
-    if (tempArray.hasOwnProperty(data.id)) {
-      // 2a. if yes, increase itemQuantity in cart
-      let newQuantity = cartData[data.id].itemQuantity + 1;
-
-      // 2b. copy old items and update with newQuantity
-      let _obj = {
-        ...cartData,
-        [data.id]: {
-          ...cartData[data.id],
-          itemQuantity: newQuantity,
-        },
-      };
-
-      setCartData(_obj);
-      onOpen(); // open drawer
-    } else {
-      // 3. if no, add to cart
-      let newObject = {
-        ...cartData,
-        [data.id]: {
-          ...data,
-          itemQuantity: 1,
-        },
-      };
-
-      setCartData(newObject);
-      onOpen(); // open drawer
-    }
   };
 
   const {
@@ -87,8 +54,9 @@ function App() {
     error: currencyError,
   } = useQuery(CURRENCY_QUERY);
 
-  useEffect(() => console.log({ cartData }), [currency, cartData]);
+  // useEffect(() => {}, [currency, state]);
 
+  // show error when API fails
   if (productError || currencyError) return <Box children="error" />;
 
   return (
@@ -146,7 +114,15 @@ function App() {
         </Box>
         <Spacer />
         <Box>
-          <Select   borderRadius="none" size="lg" w="300px" variant="outline" placeholder="Filter By" size="lg" mt="1">
+          <Select
+            borderRadius="none"
+            size="lg"
+            w="300px"
+            variant="outline"
+            placeholder="Filter By"
+            size="lg"
+            mt="1"
+          >
             <option value="all-products">All Products</option>
             <option value="new-products">New Products</option>
             <option value="sets">Sets</option>
@@ -164,15 +140,31 @@ function App() {
               <ProductCard
                 key={product.id}
                 product={product}
-                handleAddToCart={handleAddToCart}
+                currency={currency}
+                handleAddToCart={() => {
+                  dispatch({
+                    type: 'ADD_TO_CART',
+                    payload: {
+                      product,
+                      itemQuantity: 1,
+                    },
+                  });
+                  onOpen(); // open drawer
+                }}
               />
             );
           })}
         </Grid>
       </Skeleton>
 
-      <Drawer bg="#e0e2e0" onClose={onClose} isOpen={isOpen} size={'md'} placement="right">
-        <DrawerOverlay>
+      <Drawer
+        bg="#e0e2e0"
+        onClose={onClose}
+        isOpen={isOpen}
+        size={'md'}
+        placement="right"
+      >
+        <DrawerOverlay bg="#e0e2e0">
           <DrawerContent>
             <DrawerCloseButton />
 
@@ -186,7 +178,7 @@ function App() {
                 <Box w="80px">
                   {currencyData && (
                     <Select
-                    borderRadius="none"
+                      borderRadius="none"
                       name="currency"
                       id=""
                       size="sm"
@@ -203,9 +195,43 @@ function App() {
                 <Spacer />
               </Flex>
 
-              <p>Some contents...</p>
-              <p>Some contents...</p>
-              <p>Some contents...</p>
+              {state.cart.map((item, index) => {
+                const { image_url, title, price } = item.product;
+                return (
+                  <DrawerCard
+                    key={index}
+                    imageUrl={image_url}
+                    quantity={item.itemQuantity}
+                    title={title}
+                    price={price}
+                    currency={currency}
+                    increment={() =>
+                      dispatch({
+                        type: 'INCREASE_ITEM',
+                        payload: {
+                          ...item,
+                        },
+                      })
+                    }
+                    decrement={() =>
+                      dispatch({
+                        type: 'DECREASE_ITEM',
+                        payload: {
+                          ...item,
+                        },
+                      })
+                    }
+                    handleDelete={() =>
+                      dispatch({
+                        type: 'REMOVE_FROM_CART',
+                        payload: {
+                          ...item,
+                        },
+                      })
+                    }
+                  />
+                );
+              })}
             </DrawerBody>
 
             <DrawerFooter>

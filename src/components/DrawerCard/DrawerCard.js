@@ -3,17 +3,22 @@ import {
   Text,
   Box,
   Image,
-  Button,
-  Skeleton,
   Flex,
   Spacer,
   CloseButton,
 } from '@chakra-ui/react';
 import styles from './style.module.scss';
 
-const DrawerCard = ({ imageUrl, price, title, handleDelete, increment, decrement }) => {
-
-
+const DrawerCard = ({
+  imageUrl,
+  price,
+  title,
+  handleDelete,
+  currency,
+  increment,
+  decrement,
+  quantity
+}) => {
   return (
     <Box
       mt="5"
@@ -35,16 +40,20 @@ const DrawerCard = ({ imageUrl, price, title, handleDelete, increment, decrement
       <Flex alignItems="center" justifyContent="space-between">
         <Box>
           <div class={styles.quantity}>
-            <button onClick={decrement} class="btn minus1">-</button>
+            <button onClick={decrement} class="btn minus1">
+              -
+            </button>
             <input
               class={styles.quantity}
               id="id_form-0-quantity"
               min="0"
-              name="form-0-quantity"
-              value="1"
+              name="quantity"
+              value={quantity}
               type="number"
             />
-            <button onClick={increment}  class="btn add1">+</button>
+            <button onClick={increment} class="btn add1">
+              +
+            </button>
           </div>
         </Box>
         <Box
@@ -55,7 +64,7 @@ const DrawerCard = ({ imageUrl, price, title, handleDelete, increment, decrement
           lineHeight="taller"
           isTruncated
         >
-          {price}
+          {`${currency} ${price}`}
         </Box>
         <Box>
           <Image

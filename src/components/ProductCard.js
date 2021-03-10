@@ -1,7 +1,7 @@
 import React from 'react';
 import { Flex, Box, Image, Button } from '@chakra-ui/react';
 
-const ProductCard = ({ product, handleAddToCart }) => {
+const ProductCard = ({ product, handleAddToCart, currency }) => {
   return (
     <Box key={product.id} bg="transparent" w="100%" mt="90">
       <Flex alignItems="center" justifyContent="center">
@@ -33,7 +33,7 @@ const ProductCard = ({ product, handleAddToCart }) => {
         lineHeight="taller"
         isTruncated
       >
-        From: {product.price}
+        From: {`${currency} ${product.price}`}
       </Box>
       <Box mt="4" textAlign="center">
         <Button
