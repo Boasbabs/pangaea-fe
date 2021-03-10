@@ -1,0 +1,29 @@
+@import '../../styles/generic.scss';
+
+.quantity{
+    display:flex;
+    width:100px;
+  }
+  
+  /* it will support chrome and firefox */
+  .quantity input[type=number]::-webkit-inner-spin-button,
+  .quantity input[type=number]::-webkit-outer-spin-button{
+    -webkit-appearance:none;
+  }
+  
+  .quantity input,.quantity button{
+    width:40px;
+    padding:.3em;
+    font-size:1rem;
+    text-align:center;
+    font-weight:normal;
+    background:white;
+    border:1px solid $color-accent;
+    border-radius: 2px;
+  }
+  
+  .quantity input{
+    border-left:none;
+    border-right:none;
+  }
+  

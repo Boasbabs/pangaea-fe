@@ -1,0 +1,115 @@
+@import 'variables';
+@import 'breakpoint';
+@import 'normalize';
+@import 'typography';
+
+html {
+  font-size: 80%;
+  scroll-behavior: smooth;
+
+  @include xl {
+    font-size: 85%;
+  }
+
+  @include rwd(1440) {
+    font-size: 90%;
+  }
+
+  @include rwd(2560) {
+    font-size: 180%;
+  }
+}
+
+body {
+  font-family: $body-font-family;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  box-sizing: border-box;
+  font-style: normal;
+  font-weight: $base-font-weight;
+  max-width: 2560px;
+  line-height: 1.5;
+  margin: 0 auto;
+  color: $black;
+  background-color: $color-secondary;
+}
+
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+  font-family: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+
+  &:focus,
+  &:visited,
+  &:active {
+    outline: 0;
+  }
+}
+
+a {
+  text-decoration: none;
+  font-size: inherit;
+  font-weight: inherit;
+  font-style: inherit;
+  color: inherit;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+a[class='default'] {
+  color: $color-primary;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+h1 {
+  margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: $black;
+  font-weight: 500;
+  font-family: $heading-font-family;
+}
+
+textarea {
+  background-color: rgba(224, 231, 255, 0.2) !important;
+  border: 1px solid #e0e7ff !important;
+  padding: 1em;
+}
+
+// Hide fusionchart credit
+g[class$='creditgroup'] {
+  display: none !important;
+}
+
+.carousel {
+  .slide {
+    img {
+      height: 100vh;
+      object-fit: cover;
+    }
+  }
+}
+
+:global {
+}
