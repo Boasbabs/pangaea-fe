@@ -6,6 +6,7 @@ import {
   createHttpLink,
   InMemoryCache,
 } from '@apollo/client';
+import { ChakraProvider } from "@chakra-ui/react"
 import './styles/_typography.scss';
 import './index.css';
 import { App } from './pages';
@@ -20,10 +21,14 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
+
+
 ReactDOM.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
+    <ChakraProvider>
       <App />
+      </ChakraProvider>
     </ApolloProvider>
   </React.StrictMode>,
   document.getElementById('root')
