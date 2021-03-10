@@ -32,21 +32,22 @@ export function reducer(state, action) {
 
     // for increasing cart quantity
     case 'INCREASE_ITEM':
-      let newCart = cart.filter(
-        (item) => item.product.id !== action.payload.product.id
+      const objIndex = cart.findIndex(
+        (obj) => obj.product.id === action.payload.product.id
       );
-      let newQty = itemExist.itemQuantity + 1;
-      let increasedProduct = {
-        product: {
-          ...action.payload.product,
-        },
-        itemQuantity: newQty,
+      const updatedObj = {
+        ...cart[objIndex],
+        itemQuantity: cart[objIndex].itemQuantity + 1,
       };
-      let increasedCart = newCart.concat([increasedProduct]);
+      const increasedProduct = [
+        ...cart.slice(0, objIndex),
+        updatedObj,
+        ...cart.slice(objIndex + 1),
+      ];
 
       return {
         ...state,
-        cart: increasedCart,
+        cart: [...increasedProduct],
       };
 
     // for reducing cart quantity
@@ -64,17 +65,22 @@ export function reducer(state, action) {
         };
       }
 
-      let reducedProduct = {
-        product: {
-          ...action.payload.product,
-        },
-        itemQuantity: reducedQty,
+      const deleteIndex = cart.findIndex(
+        (obj) => obj.product.id === action.payload.product.id
+      );
+      const deletedObj = {
+        ...cart[deleteIndex],
+        itemQuantity: cart[deleteIndex].itemQuantity - 1,
       };
-      let _finalCart = _newCart.concat([reducedProduct]);
+      const reducedProduct = [
+        ...cart.slice(0, deleteIndex),
+        deletedObj,
+        ...cart.slice(deleteIndex + 1),
+      ];
 
       return {
         ...state,
-        cart: _finalCart,
+        cart: [...reducedProduct],
       };
 
     // delete from cart when CloseButton is clicked

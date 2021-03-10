@@ -20,6 +20,7 @@ import {
   DrawerContent,
   DrawerCloseButton,
   useDisclosure,
+  Divider,
 } from '@chakra-ui/react';
 import { PRODUCT_QUERY, CURRENCY_QUERY } from './graphql';
 import { ProductCard, DrawerCard } from 'components';
@@ -54,7 +55,7 @@ function App() {
     error: currencyError,
   } = useQuery(CURRENCY_QUERY);
 
-  // useEffect(() => {}, [currency, state]);
+  useEffect(() => {}, [currency, state]);
 
   // show error when API fails
   if (productError || currencyError) return <Box children="error" />;
@@ -158,18 +159,17 @@ function App() {
       </Skeleton>
 
       <Drawer
-        bg="#e0e2e0"
         onClose={onClose}
         isOpen={isOpen}
         size={'md'}
         placement="right"
       >
-        <DrawerOverlay bg="#e0e2e0">
-          <DrawerContent>
+        <DrawerOverlay >
+          <DrawerContent bg="#f5f5f4">
             <DrawerCloseButton />
 
             <DrawerHeader>
-              <Text mt="15" fontSize="md">
+              <Text mt="15" fontSize="md" textAlign="center">
                 Your Cart
               </Text>
             </DrawerHeader>
@@ -234,14 +234,14 @@ function App() {
               })}
             </DrawerBody>
 
+            <Divider />
             <DrawerFooter>
-              <Stack direction="column" spacing={6} align="left">
+              <Stack w="100%" direction="column" spacing={6} align="left">
                 <Button
-                  //  isFullWidth={true}
+                   isFullWidth={true}
                   variant="outline"
                   size="lg"
                   height="50px"
-                  width="300px"
                   fontSize="12"
                   borderRadius="none"
                   border="1px"
